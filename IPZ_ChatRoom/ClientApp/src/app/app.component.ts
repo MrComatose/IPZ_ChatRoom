@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
-
+import { Component, ViewChild } from "@angular/core";
+import * as signalR from "@aspnet/signalr";
+import { MatMenuTrigger } from '@angular/material';
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = 'ClientApp';
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
+  someMethod() {
+    this.trigger.openMenu();
+  }
 }

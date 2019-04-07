@@ -1,0 +1,23 @@
+<div class="wrapper">
+  <div class="row">
+    <div class="card">
+      <div class="input-group">
+        <label>Enter email</label>
+        <input
+          name="email"
+          [(ngModel)]="email"
+          type="text"
+          placeholder="Email"
+        />
+      </div>
+      <div class="input-group">
+        <label for="">Enter password</label>
+        <input name="password" [(ngModel)]="password" type="password" placeholder="Password"/>
+        <a class="sign-up">Or go sign up!</a>
+      </div>
+      <div class="input-group">
+        <button [disabled]="!email || !password" (click)="signIn()" class="log-in">Sing In</button>
+      </div>
+    </div>
+  </div>
+</div>
