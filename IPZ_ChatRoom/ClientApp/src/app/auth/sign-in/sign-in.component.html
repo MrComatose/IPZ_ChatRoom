@@ -13,7 +13,7 @@
       <div class="input-group">
         <label for="">Enter password</label>
         <input name="password" [(ngModel)]="password" type="password" placeholder="Password"/>
-        <a class="sign-up">Or go sign up!</a>
+        <a (click)="router.navigate(['auth/sign-up']);" class="sign-up">Or go sign up!</a>
       </div>
       <div class="input-group">
         <button [disabled]="!email || !password" (click)="signIn()" class="log-in">Sing In</button>

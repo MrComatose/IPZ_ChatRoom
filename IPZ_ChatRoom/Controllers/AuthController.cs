@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace IPZ_ChatRoom.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
             }
             var user = new AppUser
             {
@@ -54,6 +55,10 @@ namespace IPZ_ChatRoom.Controllers
                 FullName = model.FullName
             };
             var result =await _users.CreateAsync(user,model.Password);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.First().Description);
+            }
             return Ok(user);
         }
         [HttpGet("signin")]
@@ -61,14 +66,14 @@ namespace IPZ_ChatRoom.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState.FirstOrDefault().Value.Errors.FirstOrDefault().ErrorMessage);
             }
             var user = await _users.FindByEmailAsync(email);
             if (user == null) return BadRequest("User not found");
             var result = await _signIn.CheckPasswordSignInAsync(user, password,false);
             if (!result.Succeeded)
             {
-             return BadRequest("Failed on sign in.");
+             return BadRequest("Failed on sign in. Password or email incorect.");
             }
 
             object token = await GenerateJwtTokenAsync(email, user);

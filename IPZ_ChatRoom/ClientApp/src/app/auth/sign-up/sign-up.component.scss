@@ -1,0 +1,85 @@
+.wrapper {
+   display: flex;
+   height: 100vh;
+   justify-content: center;
+   .row {
+     align-self: center;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     .card {
+       padding: 5rem;
+       .input-group {
+        margin: 0 0 1rem 0;
+         label {
+           font-size: 2 rem;
+         }
+         input {
+           width: 100%;
+           background: transparent;
+           border: 1px solid black;
+           height: 2rem;
+           font-size: 1rem;
+          
+           text-align: center;
+           &:focus {
+             outline: none;
+           }
+         }
+         .sign-up {
+           &:hover {
+             cursor: pointer;
+ 
+             text-decoration: underline;
+             color: rgb(41, 30, 104);
+           }
+         }
+         .action-container{
+           display: flex;
+           justify-content: space-between;
+         .log-in {
+           width: 40%;
+           border: 3px solid black;
+           color: #fff;
+           background: #000;
+           text-align: center;
+           height: 3rem;
+           font-size: 1rem;
+           font-weight: bold;
+           transition: 0.2s;
+           &:hover {
+             cursor: pointer;
+             border: 3px solid rgb(41, 30, 104);
+             color: #fff;
+             background: rgb(41, 30, 104);
+           }
+         }
+         .cancel {
+          width: 40%;
+          border: 3px solid black;
+          color: #fff;
+          font-size: 1rem;
+          font-weight: bold;
+          background: #000;
+          text-align: center;
+          height: 3rem;
+          transition: 0.2s;
+          &:hover {
+            cursor: pointer;
+            border: 3px solid rgb(41, 30, 104);
+            color: #fff;
+            background: rgb(41, 30, 104);
+          }
+        }
+      }
+       }
+     }
+   }
+ }
+ ::placeholder {
+   color: rgb(41, 30, 104);
+ }
+ a{
+   text-decoration: none;
+   color: black;
+ }

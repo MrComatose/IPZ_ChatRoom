@@ -1,0 +1,28 @@
+<div class="wrapper">
+  <div class="row">
+    <div class="card">
+      <div class="input-group">
+        <label>Enter email</label>
+        <input name="email" [(ngModel)]="email" type="text" placeholder="Email" />
+      </div>
+      <div class="input-group">
+        <label>Enter full name</label>
+        <input name="email" [(ngModel)]="fullName" type="text" placeholder="Full name" />
+      </div>
+      <div class="input-group">
+        <label>Enter username</label>
+        <input name="email" [(ngModel)]="username" type="text" placeholder="Username" />
+      </div>
+      <div class="input-group">
+        <label for="">Enter password</label>
+        <input name="password" [(ngModel)]="password" type="password" placeholder="Password" />
+      </div>
+      <div class="input-group">
+        <div class="action-container">
+          <button (click)="cancel()" class="cancel">Cancel</button>
+          <button  (click)="signUp()" class="log-in">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

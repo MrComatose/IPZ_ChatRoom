@@ -1,28 +1,47 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
+import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'src/app/shared/services/message/message.service';
+import { Message } from '../../shared';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-chat-layout',
   templateUrl: './chat-layout.component.html',
   styleUrls: ['./chat-layout.component.scss']
 })
-export class ChatLayoutComponent implements OnInit , OnDestroy {
-  
-
+export class ChatLayoutComponent implements OnInit, OnDestroy {
   title = "ClientApp";
-  msgs = [];
+  msgs: Message[] = [];
+  user: any;
   private connection: signalR.HubConnection;
 
-  constructor() {
+  constructor(
+    private route: ActivatedRoute,
+    private mesageService: MessageService,
+    private toastr: ToastrService,
+  ) {
   }
   public addTransferChartDataListener = () => {
-    this.connection.on("receivemessage", data => {
+    this.connection.on("receivemessage", (data: Message) => {
       this.msgs.push(data);
+      console.log(data);
     });
   }
 
-  public sendData = () => {
-    this.connection.invoke("sendmessage", "Га?").catch(r => {
-      alert(r);
+  public sendData = (str: string) => {
+    this.mesageService.sendMessage(
+      {
+        id: 0,
+        text: str,
+        date: new Date(Date.now()),
+        user: this.user,
+        userId: this.user.id,
+       imageUrl: ''
+      }
+    ).subscribe(r =>{
+
+    }, e => {
+      this.toastr.error('Cannot send msg');
     });
   }
 
@@ -31,7 +50,8 @@ export class ChatLayoutComponent implements OnInit , OnDestroy {
   }
 
   ngOnInit() {
-
+    this.route.data.subscribe(r => { this.user = r.user; });
+    console.log(this.user);
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl("/chat")
       .build();
@@ -40,6 +60,9 @@ export class ChatLayoutComponent implements OnInit , OnDestroy {
       .then(() => console.log("Connection started"))
       .catch(err => console.log("Error while starting connection: " + err));
     this.addTransferChartDataListener();
+    this.mesageService.getMessage().subscribe(e => { this.msgs = e || [];}, e => {
+      console.log(e);
+      this.toastr.error('Couldnot get messages');});
   }
 
 }

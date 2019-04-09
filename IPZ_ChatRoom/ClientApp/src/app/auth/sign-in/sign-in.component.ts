@@ -23,12 +23,13 @@ export class SignInComponent implements OnInit {
     this.toastr.info("Processing");
     this.httpService.get<any>(`api/auth/signin?email=${this.email}&password=${this.password}`).subscribe(
       response => { 
-        localStorage.setItem('token', JSON.stringify(response.token));
-        this.toastr.success('Welcome '+ response.user.name);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        this.toastr.clear();
+        localStorage.setItem('token', response.token);
+        this.toastr.success('Welcome ' + response.user.fullName);
         this.router.navigate(['chat-room']);
       },
       error => {
+        this.toastr.clear();
         console.error(error);
         this.toastr.error(error.error);
       }

@@ -1,4 +1,5 @@
 using IPZ_ChatRoom.Data;
+using IPZ_ChatRoom.Data.Services;
 using IPZ_ChatRoom.Hubs;
 using IPZ_ChatRoom.Infrastructure.Identity;
 using IPZ_ChatRoom.Models.User;
@@ -35,7 +36,9 @@ namespace IPZ_ChatRoom
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+            options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+        );
             services.AddSignalR();
             services.AddAuthorization(options => {
                 options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
@@ -61,8 +64,8 @@ namespace IPZ_ChatRoom
                 };
             });
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlite("Filename=./simpleDatabase.db"));
-
+            services.AddDbContext<AppDbContext>(options => options.UseSqlite("Filename=./test.db"));
+            services.AddTransient<MessageService>();
             services.AddIdentity<AppUser, IdentityRole>(
                 option =>
                 {

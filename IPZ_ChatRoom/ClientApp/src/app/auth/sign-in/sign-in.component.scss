@@ -10,7 +10,7 @@
     .card {
       padding: 5rem;
       .input-group {
-        margin: 2rem;
+        margin: 0 0 1rem 0;
         label {
           font-size: 2 rem;
         }
@@ -40,7 +40,9 @@
           color: #fff;
           background: #000;
           text-align: center;
-          height: 2rem;
+          height: 3rem;
+           font-size: 1rem;
+           font-weight: bold;
           transition: 0.2s;
           &:hover {
             cursor: pointer;
@@ -55,4 +57,8 @@
 }
 ::placeholder {
   color: rgb(41, 30, 104);
+}
+a{
+  text-decoration: none;
+  color: black;
 }

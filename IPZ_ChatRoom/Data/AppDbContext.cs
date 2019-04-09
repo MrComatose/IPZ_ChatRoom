@@ -53,18 +53,6 @@ namespace IPZ_ChatRoom.Data
             this.Database.EnsureCreated();
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<AppUser>(b =>
-            {
-                // Each User can have many UserClaims
-                b.HasMany(e => e.Messages)
-                    .WithOne()
-                    .HasForeignKey(uc => uc.UserId)
-                    .IsRequired();
-            });
-        }
+     
     }
 }

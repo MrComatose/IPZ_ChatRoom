@@ -7,9 +7,9 @@ import { ChatModule } from "./chat/chat.module";
 import { AuthGuardService } from "./core";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule,MatMenuModule, MatIconModule, MatToolbarModule} from '@angular/material';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
-
+import { TokenInterceptor } from './auth/token.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +24,11 @@ import { ToastrModule } from 'ngx-toastr';
     BrowserModule,
     RouterModule.forRoot(AppRoutes)
   ],
-  providers: [AuthGuardService],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: TokenInterceptor,
+    multi: true
+},AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
