@@ -12,7 +12,9 @@ namespace IPZ_ChatRoom.Data.Services
         public MessageService(AppDbContext context)
         {
             _context = context;
-            messages = context.Messages.Include(x=>x.User);
+            var result = context.Users.ToList();
+            var result2 = context.Messages.Include(x=>x.User).ToList();
+            messages = context.Messages;
         }
 
         private readonly AppDbContext _context;

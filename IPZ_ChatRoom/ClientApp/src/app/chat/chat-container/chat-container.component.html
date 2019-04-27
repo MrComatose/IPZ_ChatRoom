@@ -1,18 +1,20 @@
 <div class="container">
 
   <div #chat class="chat-container">
-    <div class="message" *ngFor="let msg of msgs" [ngClass]="{'personal': msg.userId === user.id}">
+    <div class="message" *ngFor="let msg of msgs" [ngClass]="{'right': msg.userId === user.id,'left': msg.userId !== user.id}">
       <div class="card">
-        <span class="username">{{msg.user.userName}}</span>
-        <span class="msg">{{msg.text}}</span>
-        <span class="date">{{msg.date |  date : 'M/d/yy, h:mm a'}}</span>
+        <div class="username">{{msg.user.userName}}</div>
+        <div class="msg">{{msg.text}}</div>
+        <div class="date">{{msg.date |  date : 'M/d/yy, h:mm a'}}</div>
       </div>
     </div>
 
   </div>
 
   <div class="action">
-    <textarea class="text" [(ngModel)]="message"></textarea>
-    <button class="send" (click)="sendMessage()">Send</button>
+    <div class="chat-actions">
+      <textarea class="text" (keyup.enter)="sendMessage()" [(ngModel)]="message"></textarea>
+      <button class="send" (click)="sendMessage()">Send</button>
+    </div>
   </div>
 </div>

@@ -1,46 +1,38 @@
 .container {
-  background-color: black;
+  background-color: transparent;
   color: white;
   height: 100%;
   width: 100%;
-display: flex;
-flex-direction: column;
+  flex-direction: column;
   .chat-container {
+    &::-webkit-scrollbar-track {
+      border: 1px solid #cc2a49;
+      background-color: #000;
+    }
+
+    height: 100%;
+    &::-webkit-scrollbar {
+      width: 10px;
+      background-color: #000;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #cc2a49;
+    }
     display: flex;
     flex-direction: column;
-    overflow: auto;
-    overflow-y: scroll;
+    max-height: 90%;
+    overflow-y: auto;
     margin: 0.1rem;
     padding: 0.4rem;
     .message {
-      display: flex;
-      flex-direction: row;
-      .card {
-        display: flex;
-        flex-direction: column;
-        border: 2px solid rgb(41, 30, 104);
-        border-radius: 0.4rem;
-        margin: 0.3rem;
-        padding: 0.3rem;
-        background: rgb(255, 255, 255);
-        color: black;
-        text-overflow: hidden;
-        word-wrap: break-word;
-        max-width: 60%;
-        .username {
-          font-weight: bold;
-          font-size: 1rem;
-          color: rgb(41, 30, 104);
-        }
-        .date {
-          font-size: 0.8rem;
-          color: grey;
-        }
-      }
-      &.personal {
+      object-fit: contain;
+      flex-direction: column;
+      &.right {
+        display:flex;
         flex-direction: row-reverse;
         .card {
-          display: flex;
+          display:flex;
           flex-direction: column;
           border: 1px solid rgb(41, 30, 104);
           border-radius: 0.4rem;
@@ -66,33 +58,82 @@ flex-direction: column;
           }
         }
       }
+      &.left {
+        flex-direction: row;
+        .card {
+          display:flex;
+          flex-direction: column;
+          border: 1px solid #cc2a49;
+          border-radius: 0.4rem;
+          margin: 0.3rem;
+          padding: 0.3rem;
+          background: rgb(255, 255, 255);
+          color: black;
+          max-width: 60%;
+          word-wrap: break-word;
+          text-overflow: hidden;
+          .username {
+            display: flex;
+            flex-direction: row;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #cc2a49;
+          }
+          .date {
+            display: flex;
+            flex-direction: row;
+            font-size: 0.8rem;
+            color: grey;
+          }
+        }
+      }
     }
   }
 }
 .action {
-   margin-top: auto;
+  margin-top: auto;
   display: flex;
-  .text{
-   width: 70%;
-     color: white;
-     background: transparent
-     
-  }
-  .send {
-    width: 30%;
-    border: 3px solid rgb(66, 216, 250);
-    color: #000;
-    background: rgb(66, 216, 250);
-    text-align: center;
-    height: 3rem;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: 0.2s;
-    &:hover {
-      cursor: pointer;
-      border: 3px solid rgb(41, 30, 104);
+  width: 100%;
+  flex-direction: column;
+  .chat-actions {
+    display: flex;
+    flex-direction: row;
+    .text {
+      display: flex;
+      overflow: hidden;
+      margin: 0;
+      border-radius: 0;
+      padding: 0;
+      outline: 0;
+      width: 70%;
+      font-size: 20px;
+      resize: none;
+      border-bottom: 0;
+      border-left: 0;
+      border-right: 0;
+      color: black;
+      background: white;
+    }
+    .send {
+      display: flex;
+      align-items: center;
+      width: 30%;
+      justify-content: center;
       color: #fff;
-      background: rgb(41, 30, 104);
+      background: rgb(255, 255, 255);
+      border: none;
+      background: #cc2a49;
+      text-align: center;
+      font-size: 1rem;
+      min-height: 2rem;
+      font-weight: bold;
+      transition: 0.2s;
+      &:hover {
+        cursor: pointer;
+        border-bottom: 0;
+        color: #fff;
+        background: #cc2a49;
+      }
     }
   }
 }

@@ -50,9 +50,14 @@ namespace IPZ_ChatRoom.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
       : base(options)
         {
+            this.ChangeTracker.LazyLoadingEnabled = false;
             this.Database.EnsureCreated();
         }
 
-     
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<AppUser>().HasMany(s => s.Messages).WithOne(s => s.User);
+        }
     }
 }

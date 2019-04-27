@@ -10,10 +10,10 @@ export class ChatContainerComponent implements OnInit, AfterViewChecked {
 
 
   @Input()
-  message: string;
+  public message: string;
 
   @ViewChild('chat')
-  chat: ElementRef;
+  public chat: ElementRef;
 
   @Input()
   public set msgs(v) {
@@ -31,9 +31,8 @@ export class ChatContainerComponent implements OnInit, AfterViewChecked {
   @Output()
   public send: EventEmitter<any> = new EventEmitter();
   constructor(
+  ) {
 
-  ) { 
-    
   }
 
   ngOnInit() {

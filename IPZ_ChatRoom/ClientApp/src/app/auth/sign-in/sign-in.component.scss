@@ -8,6 +8,7 @@
     flex-direction: column;
     justify-content: center;
     .card {
+      background: "https://66.media.tumblr.com/9d8315360645d57c9bd6430c2cb74830/tumblr_n4e1ciVn7b1rtxpi1o1_1280.jpg" ;
       padding: 5rem;
       .input-group {
         margin: 0 0 1rem 0;
@@ -17,13 +18,18 @@
         input {
           width: 100%;
           background: transparent;
-          border: 1px solid black;
+          border: 1px solid #582841;
           height: 2rem;
           font-size: 1rem;
-         
+
           text-align: center;
           &:focus {
             outline: none;
+            background: transparent;
+          }
+          &:active {
+            outline: none;
+            background: transparent;
           }
         }
         .sign-up {
@@ -31,24 +37,24 @@
             cursor: pointer;
 
             text-decoration: underline;
-            color: rgb(41, 30, 104);
+            color: #cc2a49;
           }
         }
         .log-in {
           width: 100%;
-          border: 3px solid black;
-          color: #fff;
-          background: #000;
+          border: 3px solid #582841;
+          color:  #f99e4c;
+          background: #582841;
           text-align: center;
           height: 3rem;
-           font-size: 1rem;
-           font-weight: bold;
+          font-size: 1rem;
+          font-weight: bold;
           transition: 0.2s;
           &:hover {
             cursor: pointer;
-            border: 3px solid rgb(41, 30, 104);
-            color: #fff;
-            background: rgb(41, 30, 104);
+            border: 3px solid #cc2a49;
+            color: #f99e4c;
+            background: #cc2a49;
           }
         }
       }
@@ -58,7 +64,7 @@
 ::placeholder {
   color: rgb(41, 30, 104);
 }
-a{
+a {
   text-decoration: none;
-  color: black;
+  color: #582841;
 }

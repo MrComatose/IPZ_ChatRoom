@@ -20,6 +20,7 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     private mesageService: MessageService,
     private toastr: ToastrService,
   ) {
+    window.onfocus = () => { this.chatInit(); };
   }
   public addTransferChartDataListener = () => {
     this.connection.on("receivemessage", (data: Message) => {
@@ -36,9 +37,9 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
         date: new Date(Date.now()),
         user: this.user,
         userId: this.user.id,
-       imageUrl: ''
+        imageUrl: ''
       }
-    ).subscribe(r =>{
+    ).subscribe(r => {
 
     }, e => {
       this.toastr.error('Cannot send msg');
@@ -47,22 +48,33 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.connection.stop();
+    window.focus = null;
   }
 
   ngOnInit() {
+    this.mesageService.getMessage().subscribe(e => { this.msgs = e || []; }, e => {
+      console.log(e);
+      this.toastr.error('Couldnot get messages');
+    });
     this.route.data.subscribe(r => { this.user = r.user; });
-    console.log(this.user);
+    this.chatInit();
+  }
+
+  chatInit() {
+    if (this.connection) { this.connection.stop(); this.connection = null;}
+    console.log('Chat Initialization');
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("/chat")
+      .withUrl('/chat')
       .build();
     this.connection
       .start()
-      .then(() => console.log("Connection started"))
-      .catch(err => console.log("Error while starting connection: " + err));
+      .then(() => console.log('Connection started'))
+      .catch(err => console.log('Error while starting connection: ' + err));
     this.addTransferChartDataListener();
-    this.mesageService.getMessage().subscribe(e => { this.msgs = e || [];}, e => {
-      console.log(e);
-      this.toastr.error('Couldnot get messages');});
+    this.connection.onclose(
+      () => this.connection.start()
+        .then(() => console.log('Connection started'))
+        .catch(err => console.log('Error while starting connection: ' + err))
+    );
   }
-
 }

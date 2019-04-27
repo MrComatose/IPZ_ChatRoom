@@ -38,7 +38,7 @@ namespace IPZ_ChatRoom.Controllers
         public async Task<IActionResult> GetMessages()
         {
 
-            var result = _messages.messages.OrderBy(x=>x.Date.Ticks).ToList();
+            var result = _messages.messages.OrderBy(x=>x.Date.Ticks).Include(x=>x.User).ToList();
             return Ok(result);
         }
     }

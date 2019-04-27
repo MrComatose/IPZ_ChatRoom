@@ -69,7 +69,7 @@ namespace IPZ_ChatRoom
             services.AddIdentity<AppUser, IdentityRole>(
                 option =>
                 {
-                    option.User.RequireUniqueEmail = false;
+                    option.User.RequireUniqueEmail = true;
                     option.Password.RequiredLength = 4;
                     option.Password.RequireDigit = true;
                     option.Password.RequireLowercase = false;

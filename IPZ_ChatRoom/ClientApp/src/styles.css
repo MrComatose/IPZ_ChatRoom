@@ -3,9 +3,10 @@
 body{
    margin:0;
    font-family: 'Heebo', sans-serif !important;
-}
-html{
-   font-family: 'Heebo', sans-serif!important;
+   color: #582841;
+   height: 100%;
+   width: 100%;
+   background: #f99e4c;
 }
 
 @import '~ngx-toastr/toastr.css';
