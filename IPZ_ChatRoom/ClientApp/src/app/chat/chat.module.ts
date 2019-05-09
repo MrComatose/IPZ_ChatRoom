@@ -8,13 +8,20 @@ import { AccountResolver, AuthHttpClient, AppHttpClient } from '../core';
 import { SharedModule} from '../shared/shared.module';
 import { MessageService } from '../shared/services/message/message.service';
 import { FormsModule } from '@angular/forms';
-
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { ChatMenuComponent } from './chat-menu/chat-menu.component';
 @NgModule({
-  declarations: [ChatLayoutComponent, ChatContainerComponent, ChatVotingComponent],
+  declarations: [
+    ChatLayoutComponent,
+     ChatContainerComponent,
+     ChatVotingComponent,
+    ChatMenuComponent
+    ],
   imports: [
     SharedModule,
     CommonModule,
     FormsModule,
+    MatSidenavModule,
     RouterModule.forChild(
       [
         { path: '', component: ChatLayoutComponent, resolve: { user: AccountResolver } },

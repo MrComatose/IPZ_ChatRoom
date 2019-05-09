@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IPZ_ChatRoom
 {
@@ -40,19 +41,22 @@ namespace IPZ_ChatRoom
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
         );
             services.AddSignalR();
-            services.AddAuthorization(options => {
+            services.AddAuthorization(options =>
+            {
                 options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .Build();
             });
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
-           
-            services.AddAuthentication(o => {
+
+            services.AddAuthentication(o =>
+            {
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                
-            }).AddJwtBearer(options => {
+
+            }).AddJwtBearer(options =>
+            {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -63,6 +67,24 @@ namespace IPZ_ChatRoom
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_idenityOptions.JwtKey))
 
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        // If the request is for our hub...
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            (path.StartsWithSegments("/chat")))
+                        {
+                            // Read the token out of the query string
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+
+                };
+
             });
 
             services.AddDbContext<AppDbContext>(options => options.UseSqlite("Filename=./test.db"));
@@ -101,6 +123,7 @@ namespace IPZ_ChatRoom
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service)
         {
+           
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -141,7 +164,7 @@ namespace IPZ_ChatRoom
 
             UserManager<AppUser> appManager = service.GetService<UserManager<AppUser>>();
             RoleManager<IdentityRole> appRoles = service.GetService<RoleManager<IdentityRole>>();
-            AppDbContext.CreateAdminAccount(appManager, appRoles,_idenityOptions.Admin).Wait();
+            AppDbContext.CreateAdminAccount(appManager, appRoles, _idenityOptions.Admin).Wait();
         }
     }
 }

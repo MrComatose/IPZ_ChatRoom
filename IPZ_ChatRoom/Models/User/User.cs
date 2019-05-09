@@ -11,6 +11,7 @@ namespace IPZ_ChatRoom.Models.User
     {
         // Extended Properties
         public string FullName { get; set; }
+        public bool IsOnline { get; set; }
         public string PictureUrl { get; set; }
         [NotMapped]
         public virtual List<IPZ_ChatRoom.Models.Message.Message> Messages { get; set; }

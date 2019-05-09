@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import * as signalR from "@aspnet/signalr";
+import * as signalR from '@aspnet/signalr';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'src/app/shared/services/message/message.service';
 import { Message, MessageViewModel } from '../../shared';
@@ -10,11 +10,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./chat-layout.component.scss']
 })
 export class ChatLayoutComponent implements OnInit, OnDestroy {
-  title = "ClientApp";
+  title = 'ClientApp';
   msgs: MessageViewModel[] = [];
   user: any;
   private connection: signalR.HubConnection;
-
+  public opened: boolean;
   constructor(
     private route: ActivatedRoute,
     private mesageService: MessageService,
@@ -22,26 +22,23 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
   ) {
     window.onfocus = () => { this.chatInit(); };
   }
-  public addTransferChartDataListener = () => {
-    this.connection.on("receivemessage", (data: MessageViewModel) => {
+  public useEvents = () => {
+    this.connection.on('receivemessage', (data: MessageViewModel) => {
       this.msgs = [...this.msgs, data];
+    });
+    this.connection.on('connection', (user) => {
+      this.toastr.info(`${user.fullName} connected!`);
     });
   }
 
   public sendData = (str: string) => {
-    this.mesageService.sendMessage(
-      {
-        id: 0,
-        text: str,
-        date: new Date(Date.now()),
-        user: this.user,
-        userId: this.user.id,
-        imageUrl: ''
-      }
-    ).subscribe(r => {
-
-    }, e => {
-      this.toastr.error('Cannot send msg');
+    this.connection.invoke('SendMessage', {
+      id: 0,
+      text: str,
+      date: new Date(Date.now()),
+      user: this.user,
+      userId: this.user.id,
+      imageUrl: ''
     });
   }
 
@@ -63,17 +60,19 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     if (this.connection) { this.connection.stop(); this.connection = null; }
     console.log('Chat Initialization');
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl('/chat')
+      .withUrl('/chat', { accessTokenFactory: () => localStorage.getItem('token') })
       .build();
     this.connection
       .start()
-      .then(() => console.log('Connection started'))
+      .then(() => {
+        this.connection.invoke('Connect');
+        console.log('Connection started');
+      })
       .catch(err => console.log('Error while starting connection: ' + err));
-    this.addTransferChartDataListener();
+    this.useEvents();
     this.connection.onclose(
-      () => this.connection.start()
-        .then(() => console.log('Connection started'))
-        .catch(err => console.log('Error while starting connection: ' + err))
-    );
+      () => {
+        this.connection.invoke('Disconnect');
+      } );
   }
 }
