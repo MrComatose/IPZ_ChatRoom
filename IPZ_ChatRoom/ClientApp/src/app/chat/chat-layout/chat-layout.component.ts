@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'src/app/shared/services/message/message.service';
-import { Message } from '../../shared';
+import { Message, MessageViewModel } from '../../shared';
 import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-chat-layout',
@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ChatLayoutComponent implements OnInit, OnDestroy {
   title = "ClientApp";
-  msgs: Message[] = [];
+  msgs: MessageViewModel[] = [];
   user: any;
   private connection: signalR.HubConnection;
 
@@ -23,9 +23,8 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     window.onfocus = () => { this.chatInit(); };
   }
   public addTransferChartDataListener = () => {
-    this.connection.on("receivemessage", (data: Message) => {
-      this.msgs.push(data);
-      console.log(data);
+    this.connection.on("receivemessage", (data: MessageViewModel) => {
+      this.msgs = [...this.msgs, data];
     });
   }
 
@@ -61,7 +60,7 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
   }
 
   chatInit() {
-    if (this.connection) { this.connection.stop(); this.connection = null;}
+    if (this.connection) { this.connection.stop(); this.connection = null; }
     console.log('Chat Initialization');
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl('/chat')

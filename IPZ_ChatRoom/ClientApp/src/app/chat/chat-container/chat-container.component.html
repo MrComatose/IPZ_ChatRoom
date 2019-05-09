@@ -1,12 +1,17 @@
 <div class="container">
 
   <div #chat class="chat-container">
-    <div class="message" *ngFor="let msg of msgs" [ngClass]="{'right': msg.userId === user.id,'left': msg.userId !== user.id}">
+    <div class="message" *ngFor="let msg of msgs"
+      [ngClass]="{'right': msg.userName === user.userName,'left': msg.userName!== user.userName}">
       <div class="card">
-        <div class="username">{{msg.user.userName}}</div>
-        <div class="msg">{{msg.text}}</div>
+
+        <div class="username"><img class="avatar" [src]="msg.profileUrl"
+            onerror="this.src = `https://www.zoomyourtraffic.com/wp-content/uploads/avatar-2-300x300.png`"
+            alt=""><span style="padding: 5px;">{{msg.fullName}}</span></div>
+        <div class="text">{{msg.text}}</div>
         <div class="date">{{msg.date |  date : 'M/d/yy, h:mm a'}}</div>
       </div>
+
     </div>
 
   </div>

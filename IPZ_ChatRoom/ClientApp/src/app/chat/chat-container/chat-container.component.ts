@@ -1,30 +1,30 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { Message } from 'src/app/shared';
+import { Message, MessageViewModel } from 'src/app/shared';
 
 @Component({
   selector: 'app-chat-container',
   templateUrl: './chat-container.component.html',
   styleUrls: ['./chat-container.component.scss']
 })
-export class ChatContainerComponent implements OnInit, AfterViewChecked {
+export class ChatContainerComponent implements OnInit {
 
 
   @Input()
   public message: string;
 
   @ViewChild('chat')
-  public chat: ElementRef;
+  public chat: ElementRef<HTMLElement>;
 
   @Input()
   public set msgs(v) {
     this._msgs = v;
-    this.scroll();
+    setTimeout(() => this.scroll(), 200);
   }
 
   public get msgs() {
     return this._msgs;
   }
-  private _msgs: Message[];
+  private _msgs: MessageViewModel[];
 
   @Input()
   public user;
@@ -36,13 +36,9 @@ export class ChatContainerComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
-    this.scroll();
   }
 
 
-  ngAfterViewChecked(): void {
-    this.scroll();
-  }
 
 
   sendMessage() {
@@ -52,6 +48,6 @@ export class ChatContainerComponent implements OnInit, AfterViewChecked {
     this.message = '';
   }
   scroll() {
-    this.chat.nativeElement.scrollTop = this.chat.nativeElement.scrollHeight;
+    this.chat.nativeElement.scrollTop =  this.chat.nativeElement.scrollHeight ;
   }
 }

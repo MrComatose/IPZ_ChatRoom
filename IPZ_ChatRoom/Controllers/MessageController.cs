@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IPZ_ChatRoom.Data.Services;
 using IPZ_ChatRoom.Hubs;
 using IPZ_ChatRoom.Models.Message;
+using IPZ_ChatRoom.VIewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +30,13 @@ namespace IPZ_ChatRoom.Controllers
         [Authorize]
         public async Task<IActionResult> SendMessage([FromBody]Message msg)
         {
-            await this._hubContext.Clients.All.SendAsync("receivemessage", msg);
+            await this._hubContext.Clients.All.SendAsync("receivemessage", new MessageViewModel()
+            {
+                Date = msg.Date,
+                UserName = msg.User.UserName,
+                Text = msg.Text,
+                FullName = msg.User.FullName
+            });
             await _messages.addMessageAsync(msg);
             return Ok();
         }
@@ -38,7 +45,12 @@ namespace IPZ_ChatRoom.Controllers
         public async Task<IActionResult> GetMessages()
         {
 
-            var result = _messages.messages.OrderBy(x=>x.Date.Ticks).Include(x=>x.User).ToList();
+            var result = _messages.messages.OrderBy(x=>x.Date.Ticks).Include(x=>x.User).Select(x => new MessageViewModel() {
+                Date = x.Date,
+                UserName = x.User.UserName,
+                Text = x.Text,
+                FullName = x.User.FullName
+            }).ToList();
             return Ok(result);
         }
     }

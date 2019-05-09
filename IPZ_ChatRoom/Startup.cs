@@ -51,6 +51,7 @@ namespace IPZ_ChatRoom
                 o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                
             }).AddJwtBearer(options => {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -109,7 +110,7 @@ namespace IPZ_ChatRoom
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
