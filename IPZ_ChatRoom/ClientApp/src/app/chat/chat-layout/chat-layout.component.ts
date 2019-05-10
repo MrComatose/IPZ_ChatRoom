@@ -6,6 +6,8 @@ import { ToastrService } from 'ngx-toastr';
 import { MessageViewModel, UserViewModel } from 'src/app/core';
 import { MessageService } from 'src/app/core/Services/message.service';
 import { UserService } from 'src/app/core/Services/user.service';
+import { Subject, fromEvent } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-chat-layout',
   templateUrl: './chat-layout.component.html',
@@ -17,6 +19,7 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
   usersOnline: UserViewModel[];
   usersOffline: UserViewModel[];
   user: any;
+  private unsobscribe$ = new Subject<void>();
   private connection: signalR.HubConnection;
   public opened: boolean;
   constructor(
@@ -31,15 +34,17 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     this.connection.on('receivemessage', (data: MessageViewModel) => {
       this.msgs = [...this.msgs, data];
     });
-    this.connection.on('connection', (user) => {
+    this.connection.on('connection', (user: UserViewModel) => {
       if (user.isOnline) {
         this.usersOnline.push(user);
         this.usersOnline = this.usersOnline
           .filter((v, i) => this.usersOnline.indexOf(this.usersOnline.find(x => x.userName === v.userName)) === i);
-        this.usersOffline = this.usersOffline.filter((v, i) => v !== user);
+        this.usersOffline = this.usersOffline.filter((v, i) => v.userName !== user.userName);
       } else {
-       
-        this.usersOnline = this.usersOnline.filter((v, i) => v !== user);
+        this.usersOffline.push(user);
+        this.usersOffline = this.usersOffline
+          .filter((v, i) => this.usersOffline.indexOf(this.usersOffline.find(x => x.userName === v.userName)) === i);
+        this.usersOnline = this.usersOnline.filter((v, i) => v.userName !== user.userName);
       }
     });
   }
@@ -57,7 +62,8 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
 
-    window.focus = null;
+    this.unsobscribe$.next();
+    this.unsobscribe$.complete();
     this.connection.invoke('Disconnect').then(() => {
       this.connection.stop();
 
@@ -72,6 +78,12 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     });
     this.route.data.subscribe(r => { this.user = r.user; });
     this.chatInit();
+    fromEvent(window, 'focus')
+      .pipe(takeUntil(this.unsobscribe$))
+      .subscribe(r => { console.log('focus'); this.chatInit();  });
+    fromEvent(window, 'blur')
+      .pipe(takeUntil(this.unsobscribe$))
+      .subscribe(r => { console.log('blur'); this.connection.invoke('Disconnect'); });
   }
 
   chatInit() {
@@ -83,11 +95,15 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     this.connection
       .start()
       .then(() => {
-        this.connection.invoke('Connect');
-        this.userService.getUsers().subscribe(r => {
-          this.usersOnline = r.filter(x => x.isOnline);
-          this.usersOffline = r.filter(x => x.isOnline);
-        });
+        this.connection.invoke('Connect').then(
+          () => {
+            this.userService.getUsers().subscribe(r => {
+              this.usersOnline = r.filter(x => x.isOnline);
+              this.usersOffline = r.filter(x => !x.isOnline);
+            });
+          }
+        );
+        
         console.log('Connection started');
       })
       .catch(err => console.log('Error while starting connection: ' + err));

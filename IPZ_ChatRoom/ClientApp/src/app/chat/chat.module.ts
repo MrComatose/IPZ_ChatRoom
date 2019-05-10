@@ -12,6 +12,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { ChatMenuComponent } from './chat-menu/chat-menu.component';
 import { MatListModule } from '@angular/material/list';
 import { UserService } from '../core/Services/user.service';
+import { MatToolbarModule } from '@angular/material/toolbar';
 @NgModule({
   declarations: [
     ChatLayoutComponent,
@@ -25,6 +26,7 @@ import { UserService } from '../core/Services/user.service';
     MatListModule,
     FormsModule,
     MatSidenavModule,
+    MatToolbarModule,
     RouterModule.forChild(
       [
         { path: '', component: ChatLayoutComponent, resolve: { user: AccountResolver } },
@@ -34,6 +36,6 @@ import { UserService } from '../core/Services/user.service';
   ],
   exports: [RouterModule],
   entryComponents: [ChatLayoutComponent],
-  providers: [AppHttpClient, AuthHttpClient, AccountResolver, MessageService, UserService ]
+  providers: [AppHttpClient, AuthHttpClient, AccountResolver, MessageService, UserService]
 })
 export class ChatModule { }

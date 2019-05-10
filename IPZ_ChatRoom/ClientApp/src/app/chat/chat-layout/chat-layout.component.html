@@ -1,10 +1,19 @@
 <div class="container">
-  <div class="menu-triger" (click)="opened=!opened"></div>
   <mat-sidenav-container class="chat">
-    <mat-sidenav #sidenav mode="side" [(opened)]="opened" [style.background]="'#fff'" >
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" [style.background]="'#fff'">
       <app-chat-menu *ngIf="opened" [online]="usersOnline" [offline]="usersOffline"></app-chat-menu>
     </mat-sidenav>
     <mat-sidenav-content>
+      <mat-toolbar style="position:fixed;" color="primary">
+        <span (click)="opened=!opened">
+          <i *ngIf="!opened" class="material-icons trigger">
+            menu
+          </i>
+          <i *ngIf="opened" class="material-icons trigger">
+            arrow_back_ios
+          </i>
+        </span>
+      </mat-toolbar>
       <app-chat-container (send)="sendData($event)" [user]="user" [msgs]="msgs">
       </app-chat-container>
     </mat-sidenav-content>

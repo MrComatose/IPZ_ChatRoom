@@ -37,7 +37,8 @@ namespace IPZ_ChatRoom.Data
                     Email = admin.Email,
                     FullName = admin.FirstName + " " + admin.LastName,
                     PhoneNumber = admin.PhoneNumber,
-                    UserName = admin.UserName
+                    UserName = admin.UserName,
+                    PictureUrl = admin.PictureUrl
 
                 };
 
