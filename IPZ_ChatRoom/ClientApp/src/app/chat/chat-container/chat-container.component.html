@@ -6,8 +6,8 @@
       <div class="card">
 
         <div class="username"><img class="avatar" [src]="msg.profileUrl"
-            onerror="this.src = `https://www.zoomyourtraffic.com/wp-content/uploads/avatar-2-300x300.png`"
-            alt=""><span style="padding: 5px;">{{msg.fullName}}</span></div>
+            onerror="this.src = `https://www.zoomyourtraffic.com/wp-content/uploads/avatar-2-300x300.png`" alt=""><span
+            style="padding: 5px;">{{msg.fullName}}</span></div>
         <div class="text">{{msg.text}}</div>
         <div class="date">{{msg.date |  date : 'M/d/yy, h:mm a'}}</div>
       </div>
@@ -19,7 +19,9 @@
   <div class="action">
     <div class="chat-actions">
       <textarea class="text" (keyup.enter)="sendMessage()" [(ngModel)]="message"></textarea>
-      <button class="send" (click)="sendMessage()">Send</button>
+      
+        <button class="send" (click)="sendMessage()">Send</button>
+      
     </div>
   </div>
 </div>

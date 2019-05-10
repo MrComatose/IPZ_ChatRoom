@@ -1,6 +1,12 @@
-
 <div class="container">
-  <div class="chat">
-    <app-chat-container class="chat" (send)="sendData($event)" [user]="user" [msgs]="msgs"></app-chat-container>
-  </div>
+  <div class="menu-triger" (click)="opened=!opened">-></div>
+  <mat-sidenav-container class="chat">
+    <mat-sidenav #sidenav mode="side" [(opened)]="opened" [style.background]="'#fff'" >
+      <app-chat-menu *ngIf="opened"></app-chat-menu>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <app-chat-container (send)="sendData($event)" [user]="user" [msgs]="msgs">
+      </app-chat-container>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>
