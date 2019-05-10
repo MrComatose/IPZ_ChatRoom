@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { Message, MessageViewModel } from 'src/app/shared';
+import { MessageViewModel } from 'src/app/core';
+
 
 @Component({
   selector: 'app-chat-container',

@@ -45,7 +45,8 @@ namespace IPZ_ChatRoom.Controllers
         public async Task<IActionResult> GetMessages()
         {
 
-            var result = _messages.messages.OrderBy(x=>x.Date.Ticks).Include(x=>x.User).Select(x => new MessageViewModel() {
+            var result = _messages.messages.OrderBy(x=>x.Date.Ticks)
+                .Include(x=>x.User).Select(x => new MessageViewModel() {
                 Date = x.Date,
                 UserName = x.User.UserName,
                 Text = x.Text,

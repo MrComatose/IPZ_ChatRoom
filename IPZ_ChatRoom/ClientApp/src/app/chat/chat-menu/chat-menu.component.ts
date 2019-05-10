@@ -1,9 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import * as signalR from "@aspnet/signalr";
-import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'src/app/shared/services/message/message.service';
-import { Message, MessageViewModel } from '../../shared';
-import { ToastrService } from 'ngx-toastr';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { UserViewModel } from 'src/app/core';
 @Component({
   selector: 'app-chat-menu',
   templateUrl: './chat-menu.component.html',
@@ -11,9 +7,12 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class ChatMenuComponent implements OnInit, OnDestroy {
 
-  /**
-   *
-   */
+  @Input()
+  offline: UserViewModel[];
+
+  @Input()
+  online: UserViewModel[];
+
   constructor() {
 
   }

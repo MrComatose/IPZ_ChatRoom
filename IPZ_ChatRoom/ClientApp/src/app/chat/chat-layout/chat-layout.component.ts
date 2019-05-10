@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as signalR from '@aspnet/signalr';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'src/app/shared/services/message/message.service';
-import { Message, MessageViewModel } from '../../shared';
+
 import { ToastrService } from 'ngx-toastr';
+import { MessageViewModel, UserViewModel } from 'src/app/core';
+import { MessageService } from 'src/app/core/Services/message.service';
+import { UserService } from 'src/app/core/Services/user.service';
 @Component({
   selector: 'app-chat-layout',
   templateUrl: './chat-layout.component.html',
@@ -12,6 +14,8 @@ import { ToastrService } from 'ngx-toastr';
 export class ChatLayoutComponent implements OnInit, OnDestroy {
   title = 'ClientApp';
   msgs: MessageViewModel[] = [];
+  usersOnline: UserViewModel[];
+  usersOffline: UserViewModel[];
   user: any;
   private connection: signalR.HubConnection;
   public opened: boolean;
@@ -19,15 +23,24 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private mesageService: MessageService,
     private toastr: ToastrService,
+    private userService: UserService
   ) {
-    window.onfocus = () => { this.chatInit(); };
+    // window.onfocus = () => { this.chatInit(); };
   }
   public useEvents = () => {
     this.connection.on('receivemessage', (data: MessageViewModel) => {
       this.msgs = [...this.msgs, data];
     });
     this.connection.on('connection', (user) => {
-      this.toastr.info(`${user.fullName} connected!`);
+      if (user.isOnline) {
+        this.usersOnline.push(user);
+        this.usersOnline = this.usersOnline
+          .filter((v, i) => this.usersOnline.indexOf(this.usersOnline.find(x => x.userName === v.userName)) === i);
+        this.usersOffline = this.usersOffline.filter((v, i) => v !== user);
+      } else {
+       
+        this.usersOnline = this.usersOnline.filter((v, i) => v !== user);
+      }
     });
   }
 
@@ -43,8 +56,13 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.connection.stop();
+
     window.focus = null;
+    this.connection.invoke('Disconnect').then(() => {
+      this.connection.stop();
+
+    });
+
   }
 
   ngOnInit() {
@@ -66,13 +84,18 @@ export class ChatLayoutComponent implements OnInit, OnDestroy {
       .start()
       .then(() => {
         this.connection.invoke('Connect');
+        this.userService.getUsers().subscribe(r => {
+          this.usersOnline = r.filter(x => x.isOnline);
+          this.usersOffline = r.filter(x => x.isOnline);
+        });
         console.log('Connection started');
       })
       .catch(err => console.log('Error while starting connection: ' + err));
     this.useEvents();
-    this.connection.onclose(
-      () => {
-        this.connection.invoke('Disconnect');
-      } );
+    this.connection.
+      onclose(
+        () => {
+          this.connection.invoke('Disconnect');
+        });
   }
 }

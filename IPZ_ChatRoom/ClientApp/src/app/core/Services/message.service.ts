@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AuthHttpClient } from 'src/app/core';
+import { AuthHttpClient, Message, MessageViewModel } from '..';
 import { Observable } from 'rxjs';
-import { Message, MessageViewModel } from '../../models/message/message';
+
 @Injectable()
 export class MessageService {
 
@@ -9,7 +9,6 @@ export class MessageService {
     *
     */
    constructor(private httpClient: AuthHttpClient) {
-
    }
 
    public sendMessage(msg: Message): Observable<void> {

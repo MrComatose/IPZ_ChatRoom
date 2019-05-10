@@ -44,18 +44,20 @@ namespace IPZ_ChatRoom.Hubs
             });
             _userManager.UpdateAsync(user);
         }
-        public async Task Disconect()
+
+        [Authorize]
+        public async Task Disconnect()
         {
-            var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
-            user.IsOnline = false;
-            await Clients.All.SendAsync("Connection", new UserViewModel()
-            {
-                UserName = user.UserName,
-                FullName = user.FullName,
-                PictureUrl = user.PictureUrl,
-                IsOnline = user.IsOnline
-            });
-            _userManager.UpdateAsync(user);
+                var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
+                user.IsOnline = false;
+                await Clients.All.SendAsync("Connection", new UserViewModel()
+                {
+                    UserName = user.UserName,
+                    FullName = user.FullName,
+                    PictureUrl = user.PictureUrl,
+                    IsOnline = user.IsOnline
+                });
+                _userManager.UpdateAsync(user);
         }
     }
 }
