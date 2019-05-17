@@ -13,14 +13,25 @@ import { ChatMenuComponent } from './chat-menu/chat-menu.component';
 import { MatListModule } from '@angular/material/list';
 import { UserService } from '../core/Services/user.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ChatService } from '../core/Services/chat.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { AddChatDialogComponent } from './add-chat-dialog/add-chat-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 @NgModule({
   declarations: [
     ChatLayoutComponent,
     ChatContainerComponent,
     ChatVotingComponent,
-    ChatMenuComponent
+    ChatMenuComponent,
+    AddChatDialogComponent
   ],
   imports: [
+    MatInputModule,
+    MatFormFieldModule,
+    MatDialogModule,
+    MatButtonModule,
     SharedModule,
     CommonModule,
     MatListModule,
@@ -35,7 +46,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     )
   ],
   exports: [RouterModule],
-  entryComponents: [ChatLayoutComponent],
-  providers: [AppHttpClient, AuthHttpClient, AccountResolver, MessageService, UserService]
+  entryComponents: [ChatLayoutComponent, AddChatDialogComponent],
+  providers: [AppHttpClient, AuthHttpClient, AccountResolver, MessageService, UserService, ChatService]
 })
 export class ChatModule { }

@@ -1,7 +1,15 @@
-<mat-list>
-   <mat-list-item *ngFor="let user of online">
-       {{user.fullName}} is online</mat-list-item>
-   <mat-list-item *ngFor="let user of offline">
-       {{user.fullName}} is offline</mat-list-item>
-   
+<h2 class="title">Users</h2>
+
+<mat-list class="container">
+    <mat-list-item class="list-item-online" *ngFor="let user of online">
+        <mark class="online"></mark> {{user.fullName}} </mat-list-item>
+    <mat-list-item class="list-item-offline" *ngFor="let user of offline">
+        <mark class="offline"></mark> {{user.fullName}} </mat-list-item>
+
+
+</mat-list>
+<h2 class="title">Chat-rooms</h2>
+<mat-list class="container">
+    <mat-list-item (click)="selectChat(room)" [ngClass]="{'selected':room.id === chat.id}" class="list-item-chats" *ngFor="let room of chats">
+        {{room.name}} </mat-list-item>
 </mat-list>

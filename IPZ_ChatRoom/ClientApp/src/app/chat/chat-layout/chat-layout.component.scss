@@ -46,3 +46,12 @@
     color: #cc2a49;
   }
 }
+.action-container{
+  margin-left: auto;
+  display:flex;
+  .item{
+    
+    align-self: center;
+    margin: 2rem;
+  }
+}

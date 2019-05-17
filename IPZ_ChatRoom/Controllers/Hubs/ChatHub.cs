@@ -4,6 +4,7 @@ using IPZ_ChatRoom.VIewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace IPZ_ChatRoom.Hubs
@@ -25,16 +26,21 @@ namespace IPZ_ChatRoom.Hubs
                 Date = message.Date,
                 UserName = message.User.UserName,
                 Text = message.Text,
-                FullName = message.User.FullName
+                FullName = message.User.FullName,
+                ChatRoomId = message.ChatRoomId
             };
-            await Clients.All.SendAsync("ReceiveMessage", model);
-            _messageService.addMessageAsync(message);
+            var tasks = new List<Task>();
+            tasks.Add(_messageService.addMessageAsync(message));
+            tasks.Add(Clients.All.SendAsync("ReceiveMessage", model));
+            Task.WaitAll(tasks.ToArray());
+
         }
 
         public async Task Connect()
         {
-            var user =await _userManager.FindByNameAsync(Context.User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
             user.IsOnline = true;
+            await _userManager.UpdateAsync(user);
             await Clients.All.SendAsync("Connection", new UserViewModel()
             {
                 UserName = user.UserName,
@@ -42,22 +48,21 @@ namespace IPZ_ChatRoom.Hubs
                 PictureUrl = user.PictureUrl,
                 IsOnline = user.IsOnline
             });
-            _userManager.UpdateAsync(user);
         }
 
         [Authorize]
         public async Task Disconnect()
         {
-                var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
-                user.IsOnline = false;
-                await Clients.All.SendAsync("Connection", new UserViewModel()
-                {
-                    UserName = user.UserName,
-                    FullName = user.FullName,
-                    PictureUrl = user.PictureUrl,
-                    IsOnline = user.IsOnline
-                });
-                _userManager.UpdateAsync(user);
+            var user = await _userManager.FindByNameAsync(Context.User.Identity.Name);
+            user.IsOnline = false;
+            await _userManager.UpdateAsync(user);
+            await Clients.All.SendAsync("Connection", new UserViewModel()
+            {
+                UserName = user.UserName,
+                FullName = user.FullName,
+                PictureUrl = user.PictureUrl,
+                IsOnline = user.IsOnline
+            });
         }
     }
 }

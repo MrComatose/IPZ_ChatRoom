@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -37,8 +38,9 @@ namespace IPZ_ChatRoom.Controllers
         [Authorize]
         public async Task<IActionResult> GetUser()
         {
-            var user =await _users.FindByNameAsync(HttpContext.User.Identity.Name);
-            return Ok(user);
+            var user = await _users.FindByNameAsync(HttpContext.User.Identity.Name);
+            var roles = await _users.GetRolesAsync(user);
+            return Ok(new { user = user, roles = roles });
         }
 
         [HttpPost("signup")]
@@ -54,7 +56,7 @@ namespace IPZ_ChatRoom.Controllers
                 UserName = model.UserName,
                 FullName = model.FullName
             };
-            var result =await _users.CreateAsync(user,model.Password);
+            var result = await _users.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
                 return BadRequest(result.Errors.First().Description);
@@ -70,23 +72,28 @@ namespace IPZ_ChatRoom.Controllers
             }
             var user = await _users.FindByEmailAsync(email);
             if (user == null) return BadRequest("User not found");
-            var result = await _signIn.CheckPasswordSignInAsync(user, password,false);
+            var result = await _signIn.CheckPasswordSignInAsync(user, password, false);
             if (!result.Succeeded)
             {
-             return BadRequest("Failed on sign in. Password or email incorect.");
+                return BadRequest("Failed on sign in. Password or email incorect.");
             }
 
             object token = await GenerateJwtTokenAsync(email, user);
             return Ok(new { token = token, user = user });
         }
-        private async Task<object> GenerateJwtTokenAsync(string email, IdentityUser user)
+        private async Task<object> GenerateJwtTokenAsync(string email, AppUser user)
         {
+
+            var roles = await _users.GetRolesAsync(user);
+            string rolesstr = JsonConvert.SerializeObject(roles);
+
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                 new Claim(ClaimTypes.Name, user.UserName)
+                 new Claim(ClaimTypes.Name, user.UserName),
+                 new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? "reqular")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.JwtKey));

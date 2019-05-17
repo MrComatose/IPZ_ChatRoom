@@ -1,6 +1,7 @@
 using IPZ_ChatRoom.Data;
 using IPZ_ChatRoom.Data.Services;
 using IPZ_ChatRoom.Hubs;
+using IPZ_ChatRoom.Infrastructure.Database;
 using IPZ_ChatRoom.Infrastructure.Identity;
 using IPZ_ChatRoom.Models.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,10 +27,12 @@ namespace IPZ_ChatRoom
     {
 
         private readonly MyIdentityOptions _idenityOptions;
+        private readonly DatabaseOptions _databaseOptions;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             _idenityOptions = Configuration.GetSection("IdentityOptions").Get<MyIdentityOptions>();
+            _databaseOptions = Configuration.GetSection("DatabaseOptions").Get<DatabaseOptions>();
         }
 
         public IConfiguration Configuration { get; }
@@ -49,14 +52,10 @@ namespace IPZ_ChatRoom
             });
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
 
-            services.AddAuthentication(o =>
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
-                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(options =>
-            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -87,8 +86,23 @@ namespace IPZ_ChatRoom
 
             });
 
-            services.AddDbContext<AppDbContext>(options => options.UseSqlite("Filename=./test.db"));
+            services.AddDbContext<AppDbContext>(
+                //options => options.UseSqlite("Filename=./test.db")
+                options =>
+                {
+                    if (_databaseOptions.IsSqlLite)
+                    {
+                        options.UseSqlite($"Data Source={_databaseOptions.Name}.db");
+                    }
+                    else
+                    {
+                        options.UseSqlServer(_databaseOptions.DefaultConnection);
+
+
+                    }
+                });
             services.AddTransient<MessageService>();
+            services.AddTransient<ChatService>();
             services.AddIdentity<AppUser, IdentityRole>(
                 option =>
                 {
@@ -123,7 +137,7 @@ namespace IPZ_ChatRoom
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service)
         {
-           
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

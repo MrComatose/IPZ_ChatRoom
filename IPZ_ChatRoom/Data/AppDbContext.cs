@@ -1,4 +1,5 @@
 ﻿using IPZ_ChatRoom.Infrastructure.Identity;
+using IPZ_ChatRoom.Models.ChatRoom;
 using IPZ_ChatRoom.Models.Message;
 using IPZ_ChatRoom.Models.User;
 using Microsoft.AspNetCore.Identity;
@@ -48,6 +49,7 @@ namespace IPZ_ChatRoom.Data
 
         }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<ChatRoom> Chats { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options)
       : base(options)
         {

@@ -1,7 +1,7 @@
 <div class="container">
 
-  <div #chat class="chat-container">
-    <div class="message" *ngFor="let msg of msgs"
+  <div *ngIf="chat" #chat class="chat-container">
+    <div class="message" *ngFor="let msg of messages"
       [ngClass]="{'right': msg.userName === user.userName,'left': msg.userName!== user.userName}">
       <div class="card">
 
@@ -15,12 +15,12 @@
     </div>
 
   </div>
-
+  <div *ngIf="!chat"  #chat class="chat-container"><h1>No chat room selected</h1></div>
   <div class="action">
-    <div class="chat-actions">
+    <div class="chat-actions" *ngIf="chat">
       <textarea class="text" (keyup.enter)="sendMessage()" [(ngModel)]="message"></textarea>
       
-        <button class="send" (click)="sendMessage()">Send</button>
+        <button class="send" [disabled]="!chat" (click)="sendMessage()">Send</button>
       
     </div>
   </div>

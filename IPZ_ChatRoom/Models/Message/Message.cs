@@ -12,8 +12,10 @@ namespace IPZ_ChatRoom.Models.Message
         public string Text { get; set; }
         public string UserId { get; set; }
         public AppUser User { get; set; }
+        public string ChatRoomId { get; set; }
+        public IPZ_ChatRoom.Models.ChatRoom.ChatRoom ChatRoom { get; set; }
         public string ImageUrl { get; set; }
         public DateTime Date { get; set; }
     }
-    
+
 }

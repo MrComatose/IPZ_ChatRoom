@@ -4,11 +4,14 @@ export interface Message {
    userId: string;
    user: any;
    imageUrl: string;
+   chatRoomId : number;
+   chatRoom: any;
    date: Date
 }
 export interface MessageViewModel {
    text: string;
    userName: any;
    fullName: string;
-   date: Date
+   date: Date;
+   chatRoomId : number;
 }

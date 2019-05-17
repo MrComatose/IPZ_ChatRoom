@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { UserViewModel } from 'src/app/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { UserViewModel, Chat } from 'src/app/core';
 @Component({
   selector: 'app-chat-menu',
   templateUrl: './chat-menu.component.html',
@@ -12,6 +12,12 @@ export class ChatMenuComponent implements OnInit, OnDestroy {
 
   @Input()
   online: UserViewModel[];
+  @Input()
+  chat: Chat;
+  @Input()
+  chats: Chat[];
+  @Output()
+  public changeChat: EventEmitter<Chat> = new EventEmitter();
 
   constructor() {
 
@@ -21,6 +27,9 @@ export class ChatMenuComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
   }
-
+  selectChat(room){
+    this.chat = room;
+    this.changeChat.emit(room);
+  }
 
 }

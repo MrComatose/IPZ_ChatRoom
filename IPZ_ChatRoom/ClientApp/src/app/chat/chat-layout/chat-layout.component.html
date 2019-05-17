@@ -1,10 +1,11 @@
 <div class="container">
   <mat-sidenav-container class="chat">
     <mat-sidenav #sidenav mode="side" [(opened)]="opened" [style.background]="'#fff'">
-      <app-chat-menu *ngIf="opened" [online]="usersOnline" [offline]="usersOffline"></app-chat-menu>
+      <app-chat-menu *ngIf="opened" [chats]="chats" (changeChat)="changeChat($event)" [chat]="selectedChat" [online]="usersOnline"
+        [offline]="usersOffline"></app-chat-menu>
     </mat-sidenav>
     <mat-sidenav-content>
-      <mat-toolbar style="position:fixed;" color="primary">
+      <mat-toolbar >
         <span (click)="opened=!opened">
           <i *ngIf="!opened" class="material-icons trigger">
             menu
@@ -13,8 +14,14 @@
             arrow_back_ios
           </i>
         </span>
+        <div class="action-container">
+          <div class="item">Hello, {{user.userName}}</div>
+          <div class="item">
+            <button (click)="openDialog()" *ngIf="user.roles.indexOf('Admin')>-1" mat-button color="warn">Create new chat-room</button>
+          </div>
+        </div>
       </mat-toolbar>
-      <app-chat-container (send)="sendData($event)" [user]="user" [msgs]="msgs">
+      <app-chat-container [chat]="selectedChat" (send)="sendData($event)" [user]="user" [msgs]="msgs">
       </app-chat-container>
     </mat-sidenav-content>
   </mat-sidenav-container>

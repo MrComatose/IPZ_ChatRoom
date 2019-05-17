@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
-import { MessageViewModel } from 'src/app/core';
+import { MessageViewModel, Chat } from 'src/app/core';
 
 
 @Component({
@@ -10,17 +10,34 @@ import { MessageViewModel } from 'src/app/core';
 export class ChatContainerComponent implements OnInit {
 
 
+  private _chat: Chat;
+  public messages =  []
+  public get chat(): Chat {
+    return this._chat;
+  }
+  @Input()
+  public set chat(v: Chat) {
+    if (this._msgs) {
+      this.messages = this._msgs.filter(x => x.chatRoomId.toString() === v.id.toString());
+    }
+    this._chat = v;
+  }
+
   @Input()
   public message: string;
 
   @ViewChild('chat')
-  public chat: ElementRef<HTMLElement>;
+  public chatElement: ElementRef<HTMLElement>;
 
   @Input()
   public set msgs(v) {
+    if(this._chat){
+    this.messages = v.filter(x => x.chatRoomId.toString() === this.chat.id.toString());
+    }
     this._msgs = v;
     setTimeout(() => this.scroll(), 200);
   }
+
 
   public get msgs() {
     return this._msgs;
@@ -49,6 +66,6 @@ export class ChatContainerComponent implements OnInit {
     this.message = '';
   }
   scroll() {
-    this.chat.nativeElement.scrollTop =  this.chat.nativeElement.scrollHeight ;
+    this.chatElement.nativeElement.scrollTop = this.chatElement.nativeElement.scrollHeight;
   }
 }

@@ -11,5 +11,6 @@ namespace IPZ_ChatRoom.VIewModels
         public string Text { get; set; }
         public DateTime Date { get; set; }
         public string FullName { get; set; }
+        public string ChatRoomId { get; set; }
     }
 }

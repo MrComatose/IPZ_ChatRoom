@@ -1,0 +1,46 @@
+.container {
+  height: 30%;
+  overflow: auto;
+}
+.title {
+  color: #cc2a49;
+}
+mark {
+  border-radius: 50px;
+  height: 0.5rem;
+  width: 0.5rem;
+  margin: 1rem;
+  &.online {
+    background-color: chartreuse;
+  }
+  &.offline {
+    background-color: rgb(104, 104, 104);
+  }
+}
+.list-item-online {
+  transition: 0.2s;
+  background-color: transparent;
+  &:hover {
+     background-color: rgb(177, 255, 255);
+     cursor: pointer;
+  }
+}
+.list-item-offline {
+   transition: 0.2s;
+   background-color: transparent;
+   &:hover {
+      background-color: rgb(206, 206, 206);
+      cursor: pointer;
+   }
+}
+.list-item-chats{
+  transition: 0.2s;
+   background-color: transparent;
+   &:hover {
+      background-color: rgb(255, 121, 121);
+      cursor: pointer;
+   }
+   &.selected{
+   background-color: greenyellow;
+   }
+}

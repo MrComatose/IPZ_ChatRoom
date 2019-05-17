@@ -35,7 +35,8 @@ namespace IPZ_ChatRoom.Controllers
                 Date = msg.Date,
                 UserName = msg.User.UserName,
                 Text = msg.Text,
-                FullName = msg.User.FullName
+                FullName = msg.User.FullName,
+                ChatRoomId = msg.ChatRoomId
             });
             await _messages.addMessageAsync(msg);
             return Ok();
@@ -50,7 +51,8 @@ namespace IPZ_ChatRoom.Controllers
                 Date = x.Date,
                 UserName = x.User.UserName,
                 Text = x.Text,
-                FullName = x.User.FullName
+                FullName = x.User.FullName,
+                ChatRoomId = x.ChatRoomId
             }).ToList();
             return Ok(result);
         }
