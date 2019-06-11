@@ -20,7 +20,6 @@ namespace IPZ_ChatRoom.Data.Services
         public IQueryable<Message> messages { get; set; }
         public async Task<int> addMessageAsync(Message msg)
         {
-            msg.User = _context.Users.FirstOrDefault(x=>x.Id == msg.UserId);
             await _context.Messages.AddAsync(msg);
             return await _context.SaveChangesAsync();
         }
